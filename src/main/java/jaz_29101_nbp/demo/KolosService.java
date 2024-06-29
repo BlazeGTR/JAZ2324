@@ -1,6 +1,7 @@
 package jaz_29101_nbp.demo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jaz_29101_nbp.demo.Exceptions.NotFoudException;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,15 @@ public class KolosService {
         nbpApiPath += currency +"/";
         nbpApiPath += dateStartS+"/";
         nbpApiPath += dateEndS+"/";
-        String result = restTemplateConfig.restTemplate().getForObject(nbpApiPath,String.class);
+        String result = new String();
+        try {
+            result = restTemplateConfig.restTemplate().getForObject(nbpApiPath,String.class);
+        }
+        catch (Exception e)
+        {
+            throw(new NotFoudException());
+        }
+
         NbpResponseClass response = new NbpResponseClass();
         //Mapujemy wartości
         try {
@@ -29,7 +38,7 @@ public class KolosService {
         }
         catch (Exception e)
         {
-            System.out.println(e);
+            //System.out.println(e);
         }
         //wyświetlamy wszystkie wartości z tables
         double avg = 0;
