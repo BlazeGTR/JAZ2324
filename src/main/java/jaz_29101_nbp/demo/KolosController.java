@@ -24,36 +24,13 @@ import java.util.Date;
 public class KolosController {
 
     private final KolosService kolosService;
-    private final RestTemplateConfig restTemplateConfig;
-    public KolosController(KolosService kolosService,  RestTemplateConfig restTemplateConfig) {this.kolosService = kolosService; this.restTemplateConfig = restTemplateConfig;}
-    ObjectMapper objectMapper = new ObjectMapper();
+    public KolosController(KolosService kolosService) {this.kolosService = kolosService;}
 
 
     @GetMapping("/{currency}/{dateStartS}/{dateEndS}")
     ResponseEntity<String> test(@PathVariable String currency, @PathVariable String dateStartS, @PathVariable String dateEndS)
     {
-        String nbpApiPath = "https://api.nbp.pl/api/exchangerates/rates/A/";
-        nbpApiPath += currency +"/";
-        nbpApiPath += dateStartS+"/";
-        nbpApiPath += dateEndS+"/";
-        String result = restTemplateConfig.restTemplate().getForObject(nbpApiPath,String.class);
-        NbpResponseClass response = new NbpResponseClass();
-        try {
-            response = objectMapper.readValue(result, NbpResponseClass.class);
-        }
-        catch (Exception e)
-        {
-            System.out.println(e);
-        }
-        System.out.println(response.getRates().length);
-        for( int i = 0;response.getRates().length > i; i++ )
-        {
-            System.out.println(response);
-        }
-
-
-        LocalDate dateStart = LocalDate.parse(dateStartS);
-        LocalDate dateEnd = LocalDate.parse(dateEndS);
-        return new ResponseEntity<>("true", HttpStatus.OK);
+        String response = "avg: " + String.valueOf(kolosService.getAverage(currency, dateStartS,dateEndS));
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
