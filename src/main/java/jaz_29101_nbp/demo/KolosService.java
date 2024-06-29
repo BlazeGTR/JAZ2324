@@ -28,17 +28,19 @@ public class KolosService {
         }
         catch (Exception e)
         {
+            Query query = new Query(currency, LocalDate.parse(dateStartS),LocalDate.parse(dateEndS),0);
+            queryRepository.save(query);
             throw(new NotFoudException());
         }
 
         NbpResponseClass response = new NbpResponseClass();
-        //Mapujemy wartości
+        //Mapujemy S
         try {
             response = objectMapper.readValue(result, NbpResponseClass.class);
         }
         catch (Exception e)
         {
-            //System.out.println(e);
+            throw(new NotFoudException());
         }
         //wyświetlamy wszystkie wartości z tables
         double avg = 0;
